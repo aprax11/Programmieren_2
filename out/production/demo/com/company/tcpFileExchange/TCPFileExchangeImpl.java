@@ -3,32 +3,32 @@ package tcpFileExchange;
 import fileexchange.Fileexchanger;
 import fileexchange.RecieveFile;
 import fileexchange.SendFile;
+import tcp.ConnectToSocket;
 import tcp.Connection;
 import tcp.Connector;
+import tcp.OpenConnection;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
-public class TCPFileExchangeImpl implements TCPFileExchange {
+public class TCPFileExchangeImpl implements TCPFileExchange{
     @Override
-    public void connect2Host(String filename, String hostname, int port) throws IOException {
-        //connects
-        Connection connection = new Connector();
-        ((Connector) connection).connctetosocket(port, hostname);
+    public void sendFile2Host(String filename, String hostname, int port) throws IOException {
+        // need connection
+        ConnectToSocket client = new Connector();
+        Connection connection = client.connectToSocket(port, hostname);
 
-        //sends file
-        SendFile filesender = new Fileexchanger();
-        filesender.sendFile(filename, connection.getoutputstream());
+        //send file
+        SendFile fileSender = new Fileexchanger();
+        fileSender.sendFile(filename, connection.getoutputstream());
     }
 
     @Override
-    public void acceptConnection(String filename, int port) throws IOException {
-        //opens connection
-        Connection connection = new Connector();
-        ((Connector) connection).acceptsocket(port);
+    public void receiveFile(String filename, int port) throws IOException {
+        OpenConnection server = new Connector();
+        Connection connection = server.acceptsocket(port);
 
-        //recievs file
-        RecieveFile recieveFile = new Fileexchanger();
-        recieveFile.receveFile(filename, connection.getinputstream());
+        RecieveFile fileReceiver = new Fileexchanger();
+        fileReceiver.recieveFile(filename, connection.getinputstream());
+
     }
 }
